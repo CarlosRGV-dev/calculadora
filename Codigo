@@ -1,0 +1,120 @@
+extends Node2D
+
+@onready var label = $tela
+
+var num_atual = ""
+
+var botao = [
+	[1,2,3],
+	[4,5,6],
+	[7,8,9],
+	[0]
+]
+
+var multis = [
+	["+", "-", "x", "/"],
+]
+
+func adi_num(num):
+	num_atual += str(num)
+	label.text = num_atual
+
+func clicar_botao(linha, coluna):
+	adi_num(botao[linha][coluna])
+
+func clicar_multis(linha, coluna):
+	var op = multis[linha][coluna]
+	
+	if op == "x":
+		op = "*"
+	
+	adi_num(op)
+
+func calcular():
+	var expressao = num_atual
+	
+	var operador = ""
+	
+	if "+" in expressao:
+		operador = "+"
+	elif "-" in expressao:
+		operador = "-"
+	elif "*" in expressao:
+		operador = "*"
+	elif "/" in expressao:
+		operador = "/"
+	
+	if operador == "":
+		return
+	
+	var partes = expressao.split(operador)
+	
+	if partes.size() < 2:
+		return
+	
+	var a = float(partes[0])
+	var b = float(partes[1])
+	
+	var resultado = 0
+	
+	match operador:
+		"+":
+			resultado = a + b
+		"-":
+			resultado = a - b
+		"*":
+			resultado = a * b
+		"/":
+			if b != 0:
+				resultado = a / b
+			else:
+				label.text = "Erro"
+				num_atual = ""
+				return
+	
+	num_atual = str(resultado)
+	label.text = num_atual
+
+func _on_1_pressed():
+	clicar_botao(0, 0)
+func _on_2_pressed():
+	clicar_botao(0, 1)
+func _on_3_pressed():
+	clicar_botao(0, 2)
+
+func _on_4_pressed():
+	clicar_botao(1, 0)
+func _on_5_pressed():
+	clicar_botao(1, 1)
+func _on_6_pressed():
+	clicar_botao(1, 2)
+
+func _on_7_pressed():
+	clicar_botao(2, 0)
+func _on_8_pressed():
+	clicar_botao(2, 1)
+func _on_9_pressed():
+	clicar_botao(2, 2)
+
+func _on_0_pressed():
+	clicar_botao(3, 0)
+func _on_mais_pressed():
+	clicar_multis(0,0)
+func _on_menos_pressed():
+	clicar_multis(0,1)
+
+func _on_vezes_pressed():
+	clicar_multis(0,2)
+func _on_multi_pressed():
+	clicar_multis(0,3)
+func _on_enter_pressed():
+	calcular()
+
+func _on_corrigir_pressed():
+	if num_atual.length() > 0:
+		num_atual = num_atual.substr(0, num_atual.length() - 1)
+		label.text = num_atual
+
+func _on_apagar_tudo_pressed():
+	num_atual = ""
+	label.text = ""
